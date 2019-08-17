@@ -1,9 +1,7 @@
 import React, { Fragment } from 'react';
-import logo from './logo.svg';
-import './App.css';
 
-import Header from './Header';
-import NavBar from './NavBar';
+import Header from './components/Header';
+import NavBar from './components/NavBar';
 
 
 function App() {
@@ -14,12 +12,6 @@ function App() {
         <NavBar links={['Mensagens', 'Notificações', 'Coisas loucas']}/>
       </Header>
       
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>teste</p>
-        </header>
-      </div>
     </Fragment>
   );
 }
