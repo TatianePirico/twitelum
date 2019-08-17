@@ -12,7 +12,7 @@ class App extends Component {
 
 	state = {
 		novoTweet: '',
-		listaTweet: ['Ohana quer dizer família. Família quer dizer nunca abandonar ou esquecer']
+		listaTweet: []
 	};
 
 	novoTweetEstaValido() {
@@ -31,7 +31,7 @@ class App extends Component {
 
 	render() {
 
-		const {novoTweet, listaTweet} = this.state;
+		const { novoTweet } = this.state;
 
 		return (
 			<Fragment>
@@ -46,15 +46,15 @@ class App extends Component {
 									<span className={`novoTweet__status ${this.novoTweetEstaValido() ? '' : 'novoTweet__status--invalido'}`}>
 										{novoTweet.length}/140
 									</span>
-									<textarea 
-										className="novoTweet__editor" 
+									<textarea
+										className="novoTweet__editor"
 										placeholder="O que está acontecendo?"
-										onChange={(event) => this.setState({novoTweet:event.target.value})}
+										onChange={(event) => this.setState({ novoTweet: event.target.value })}
 										value={novoTweet}
 									></textarea>
 								</div>
-								<button 
-									type="submit" 
+								<button
+									type="submit"
 									className={`novoTweet__envia `}
 									disabled={!this.novoTweetEstaValido()}
 								>Tweetar</button>
@@ -67,29 +67,36 @@ class App extends Component {
 					<Dashboard posicao="centro">
 						<Widget>
 							<div className="tweetsArea">
-
-								{
-									listaTweet.map((tweet, index) =>
-										<Tweet
-											key={`${tweet}${index}`}
-											nomeUsuario="Tatiane Pirico"
-											userName="@tatianepirico"
-											totalLikes={2}
-											avatarUrl={'https://stickershop.line-scdn.net/stickershop/v1/product/925/LINEStorePC/main.png;compress=true'}
-											>
-											<p className="tweet__conteudo">
-												<span>{tweet}</span>
-											</p>
-										</Tweet>
-									)
-								}
-
+								{this.renderTweet()}
 							</div>
 						</Widget>
 					</Dashboard>
 				</div>
 			</Fragment>
 		);
+	}
+
+	renderTweet() {
+
+		const {listaTweet} = this.state;
+
+		if (!listaTweet.length) return <span>Let's go! Vamos arrumar briga!</span>
+		
+		return (
+			listaTweet.map((tweet, index) =>
+				<Tweet
+					key={`${tweet}${index}`}
+					nomeUsuario="Tatiane Pirico"
+					userName="@tatianepirico"
+					totalLikes={2}
+					avatarUrl={'https://stickershop.line-scdn.net/stickershop/v1/product/925/LINEStorePC/main.png;compress=true'}
+				>
+					<p className="tweet__conteudo">
+						<span>{tweet}</span>
+					</p>
+				</Tweet>
+			)
+		)
 	}
 }
 
