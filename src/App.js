@@ -1,4 +1,6 @@
 import React, { Component, Fragment } from 'react';
+
+//Components
 import Cabecalho from './components/Cabecalho'
 import NavMenu from './components/NavMenu'
 import Dashboard from './components/Dashboard'
@@ -10,7 +12,7 @@ class App extends Component {
 
 	state = {
 		novoTweet: '',
-		listaTweet: []
+		listaTweet: ['Ohana quer dizer família. Família quer dizer nunca abandonar ou esquecer']
 	};
 
 	novoTweetEstaValido() {
@@ -28,6 +30,9 @@ class App extends Component {
 	}
 
 	render() {
+
+		const {novoTweet, listaTweet} = this.state;
+
 		return (
 			<Fragment>
 				<Cabecalho>
@@ -39,13 +44,13 @@ class App extends Component {
 							<form className="novoTweet" onSubmit={this.handleCriaTweet}>
 								<div className="novoTweet__editorArea">
 									<span className={`novoTweet__status ${this.novoTweetEstaValido() ? '' : 'novoTweet__status--invalido'}`}>
-										{this.state.novoTweet.length}/140
+										{novoTweet.length}/140
 									</span>
 									<textarea 
 										className="novoTweet__editor" 
 										placeholder="O que está acontecendo?"
 										onChange={(event) => this.setState({novoTweet:event.target.value})}
-										value={this.state.novoTweet}
+										value={novoTweet}
 									></textarea>
 								</div>
 								<button 
@@ -64,9 +69,9 @@ class App extends Component {
 							<div className="tweetsArea">
 
 								{
-									this.state.listaTweet.map((tweet, index) =>
+									listaTweet.map((tweet, index) =>
 										<Tweet
-											key={`Tweet-${index}`}
+											key={`${tweet}${index}`}
 											nomeUsuario="Tatiane Pirico"
 											userName="@tatianepirico"
 											totalLikes={2}
@@ -78,6 +83,7 @@ class App extends Component {
 										</Tweet>
 									)
 								}
+
 							</div>
 						</Widget>
 					</Dashboard>
