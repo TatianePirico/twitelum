@@ -6,6 +6,7 @@ class Header extends React.Component {
     return (
       <header>
         <h1>Twitelum</h1>
+        { this.props.children }
       </header>
     );
   }

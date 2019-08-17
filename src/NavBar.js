@@ -1,19 +1,19 @@
 import React from 'react';
 
-class NavBar extends React.Component {
+export default function NavBar(props) {
 
-  render() {
-    return (
-      <nav>
-        <ul>
-          <li><a href="#">Home</a></li>
-          <li><a href="#">Notificações</a></li>
-          <li><a href="#">Mensagens</a></li>
-        </ul>
-      </nav>
-    );
-  }
+  return (
+    <nav>
+      <ul>
 
+        {props.links.map(link =>
+          <li>
+            <a href="#">{link}</a>
+          </li>
+        )}
+
+      </ul>
+    </nav>
+
+  );
 }
-
-export default NavBar;
