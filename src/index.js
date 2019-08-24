@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import ReactDOM from "react-dom";
 
 // CSSs Globais
@@ -8,14 +8,18 @@ import "./assets/css/btn.css";
 import "./assets/css/icon.css";
 import "./assets/css/iconHeart.css";
 import "./assets/css/notificacao.css";
-
 import "./assets/css/novoTweet.css";
-// import './index.css';
 
-import App from "./App";
+import Route from "./routes";
+import {BrowserRouter} from "react-router-dom";
+
 import * as serviceWorker from "./serviceWorker";
 
-ReactDOM.render(<App />, document.getElementById("root"));
+ReactDOM.render(
+  <BrowserRouter>
+    <Route />
+  </BrowserRouter>,
+  document.getElementById("root"));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

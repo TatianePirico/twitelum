@@ -1,14 +1,14 @@
 import React, { Component, Fragment } from 'react';
 
 //Components
-import Cabecalho from './components/Cabecalho'
-import NavMenu from './components/NavMenu'
-import Dashboard from './components/Dashboard'
-import Widget from './components/Widget'
-import TrendsArea from './components/TrendsArea'
-import Tweet from './components/Tweet'
+import Cabecalho from '../components/Cabecalho'
+import NavMenu from '../components/NavMenu'
+import Dashboard from '../components/Dashboard'
+import Widget from '../components/Widget'
+import TrendsArea from '../components/TrendsArea'
+import Tweet from '../components/Tweet'
 
-class App extends Component {
+class Home extends Component {
 
 	state = {
 		novoTweet: '',
@@ -78,10 +78,10 @@ class App extends Component {
 
 	renderTweet() {
 
-		const {listaTweet} = this.state;
+		const { listaTweet } = this.state;
 
 		if (!listaTweet.length) return <span>Let's go! Vamos arrumar briga!</span>
-		
+
 		return (
 			listaTweet.map((tweet, index) =>
 				<Tweet
@@ -100,4 +100,4 @@ class App extends Component {
 	}
 }
 
-export default App;
+export default Home;
