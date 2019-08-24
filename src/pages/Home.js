@@ -23,10 +23,22 @@ class Home extends Component {
   handleCriaTweet = (event) => {
     event.preventDefault();
 
-    this.setState({
-      listaTweet: [...this.state.listaTweet, this.state.novoTweet],
-      novoTweet: '',
-    });
+    const url = 'https://api-twitelum.herokuapp.com';
+    const token = localStorage.getItem('token');
+
+    fetch(`${url}/tweets?X-AUTH-TOKEN=${token}`, {
+      method: 'POST',
+      body: JSON.stringify({ conteudo: this.state.novoTweet })
+    })
+      .then(async (response) => {
+        const data = await response.json();
+        this.setState({
+          listaTweet: [...this.state.listaTweet, data],
+          novoTweet: '',
+        });
+      })
+      .catch((err) => console.log(err));
+
   }
 
   render() {
@@ -83,16 +95,16 @@ class Home extends Component {
     if (!listaTweet.length) return <span>Let's go! Vamos arrumar briga!</span>
 
     return (
-      listaTweet.map((tweet, index) =>
+      listaTweet.map((tweet) =>
         <Tweet
-          key={`${tweet}${index}`}
-          nomeUsuario="Tatiane Pirico"
-          userName="@tatianepirico"
-          totalLikes={2}
-          avatarUrl={'https://stickershop.line-scdn.net/stickershop/v1/product/925/LINEStorePC/main.png;compress=true'}
+          key={tweet._id}
+          nomeUsuario={`${tweet.usuario.nome} ${tweet.usuario.sobrenome}`}
+          userName={`@${tweet.usuario.login}`}
+          totalLikes={tweet.totalLikes}
+          avatarUrl={tweet.usuario.foto}
         >
           <p className="tweet__conteudo">
-            <span>{tweet}</span>
+            <span>{tweet.conteudo}</span>
           </p>
         </Tweet>
       )

@@ -20,7 +20,7 @@ class LoginPage extends Component {
 
     const login = this.refs.login.value;
     const senha = this.refs.senha.value;
-    const url = 'http://twitelum-api.herokuapp.com';
+    const url = 'https://api-twitelum.herokuapp.com';
 
     fetch(`${url}/login`, {
       method: 'POST',
