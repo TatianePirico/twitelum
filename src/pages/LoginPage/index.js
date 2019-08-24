@@ -3,10 +3,13 @@ import Cabecalho from '../../components/Cabecalho'
 import Widget from '../../components/Widget'
 
 import If from '../../components/If';
+import { NotificacaoContext } from '../../contexts/notificacao';
 
 import './loginPage.css'
 
 class LoginPage extends Component {
+
+  static contextType = NotificacaoContext;
 
   state = {
 		errorMessage: '',
@@ -28,6 +31,7 @@ class LoginPage extends Component {
         const data = await response.json();
 
         if (response.ok) {
+          this.context.setMensagem('Login feito com sucesso');
           localStorage.setItem('token', data.token);
           this.props.history.push('/');
         } else {

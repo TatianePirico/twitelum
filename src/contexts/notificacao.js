@@ -1,19 +1,29 @@
-import React, { Component, createContext } from 'react';
+import React, { useState, createContext } from 'react';
 
-export const NotificacaoContext = createContext('');
+export const NotificacaoContext = createContext({
+  mensagem: '',
+  setMensagem() { }
+});
 
-export class NotificacaoProvider extends Component {
-  
-  state = {
-    mensagem: 'Olá, eu sou uma mensagem! <3'
-  }
+export const NotificacaoProvider = (props) => {
 
-  render() {
-    return(
-      <NotificacaoContext.Provider value={this.state.mensagem}>
-        {this.props.children}
-      </NotificacaoContext.Provider>
-    );
-  }
+  const [mensagem, setMensagem] = useState(''); 
 
+  return (
+    <NotificacaoContext.Provider
+      value={{
+        mensagem: mensagem,
+        setMensagem: (novaMensagem) => setMensagem(novaMensagem)
+      }}>
+
+      {props.children}
+
+      {
+        mensagem &&
+        <div className="notificacaoMsg" onAnimationEnd={() =>setMensagem('')}>
+          {mensagem}
+        </div>
+      }
+    </NotificacaoContext.Provider>
+  );
 }
