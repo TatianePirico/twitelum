@@ -32,6 +32,12 @@ class Home extends Component {
     return novoTweetLength <= 140 && novoTweetLength > 0;
   }
 
+  onDeleteTweet = (id) => {
+    const { listaTweet } = this.state;
+
+    this.setState({ listaTweet: listaTweet.filter((tweet) => tweet._id !== id) });
+  }
+
   handleCriaTweet = (event) => {
 
     event.preventDefault();
@@ -112,6 +118,7 @@ class Home extends Component {
           id={tweet._id}
           likeado={tweet.likeado}
           removivel={tweet.removivel}
+          onDeleteTweet={this.onDeleteTweet}
         >
           <p className="tweet__conteudo">
             <span>{tweet.conteudo}</span>

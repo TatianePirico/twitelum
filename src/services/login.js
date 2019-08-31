@@ -1,8 +1,8 @@
+import config from '../config';
+
 export function logar(login, senha) {
 
-  const url = 'https://twitelum-api.herokuapp.com';
-
-  return fetch(`${url}/login`, {
+  return fetch(`${config.api}/login`, {
     method: 'POST',
     body: JSON.stringify({ login, senha })
   })

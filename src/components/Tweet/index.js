@@ -10,6 +10,16 @@ class Tweet extends Component {
     totalLikes: this.props.totalLikes
   }
 
+  handleDelete = () => {
+
+    const token = localStorage.getItem('token');
+    const tweetId = this.props.id;
+
+    TweetsService.deleteTweet({token, tweetId})
+    .then(() => this.props.onDeleteTweet(tweetId))
+    .catch((err) => console.log(err));
+  }
+
   handleCurtir = () => {
 
     const token = localStorage.getItem('token');
@@ -26,7 +36,7 @@ class Tweet extends Component {
 
   render() {
 
-    const { avatarUrl, nomeUsuario, userName, children, removivel } = this.props;
+    const { avatarUrl, nomeUsuario, userName, children, removivel} = this.props;
 
     return (
       <article className="tweet">
@@ -58,7 +68,9 @@ class Tweet extends Component {
 
           </button>
 
-          {removivel && <button className="btn btn--blue btn--remove"> X </button> }
+          {removivel && 
+            <button className="btn btn--blue btn--remove" onClick={this.handleDelete}> X </button> 
+          }
 
         </footer>
 
