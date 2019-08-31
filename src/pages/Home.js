@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react';
 
 //Components
 import Cabecalho from '../components/Cabecalho';
+import Modal from '../components/Modal';
 import NavMenu from '../components/NavMenu';
 import Dashboard from '../components/Dashboard';
 import Widget from '../components/Widget';
@@ -14,11 +15,12 @@ class Home extends Component {
 
   state = {
     novoTweet: '',
-    listaTweet: []
+    listaTweet: [],
+    tweetSelecionado: null
   };
 
   componentWillMount() {
-    
+
     const token = localStorage.getItem('token');
 
     TweetsService.listaTweets(token)
@@ -26,10 +28,19 @@ class Home extends Component {
         this.setState({ listaTweet: listaDeTweets });
       })
   }
- 
+
   novoTweetEstaValido() {
     const novoTweetLength = this.state.novoTweet.length;
     return novoTweetLength <= 140 && novoTweetLength > 0;
+  }
+
+  handleCloseModal = () => {
+    this.setState({ tweetSelecionado: null });
+  }
+
+  onSelectTweet = (tweetId) => {
+    const tweetSelecionado = this.state.listaTweet.find(tweet => tweet._id === tweetId);
+    this.setState({ tweetSelecionado });
   }
 
   onDeleteTweet = (id) => {
@@ -43,9 +54,9 @@ class Home extends Component {
     event.preventDefault();
 
     const token = localStorage.getItem('token');
-    
+
     TweetsService.criaTweet(token, this.state.novoTweet)
-      .then((novoTweet)=>{
+      .then((novoTweet) => {
         this.setState({
           listaTweet: [novoTweet, ...this.state.listaTweet],
           novoTweet: '',
@@ -56,7 +67,7 @@ class Home extends Component {
 
   render() {
 
-    const { novoTweet } = this.state;
+    const { novoTweet, tweetSelecionado } = this.state;
 
     return (
       <Fragment>
@@ -97,6 +108,33 @@ class Home extends Component {
             </Widget>
           </Dashboard>
         </div>
+
+        <Modal
+          isOpen={Boolean(this.state.tweetSelecionado)}
+          onClose={this.handleCloseModal} >
+
+          {
+            tweetSelecionado &&
+            <Tweet
+              nomeUsuario={`${tweetSelecionado.usuario.nome} ${tweetSelecionado.usuario.sobrenome}`}
+              userName={`@${tweetSelecionado.usuario.login}`}
+              totalLikes={tweetSelecionado.totalLikes}
+              avatarUrl={tweetSelecionado.usuario.foto}
+              id={tweetSelecionado._id}
+              likeado={tweetSelecionado.likeado}
+            //removivel={tweetSelecionado.removivel}
+            //onDeleteTweet={this.onDeleteTweet}
+            //onSelect={this.onSelectTweet}
+            >
+              <p className="tweet__conteudo">
+                <span>{tweetSelecionado.conteudo}</span>
+              </p>
+            </Tweet>
+          }
+
+
+        </Modal>
+
       </Fragment>
     );
   }
@@ -119,6 +157,7 @@ class Home extends Component {
           likeado={tweet.likeado}
           removivel={tweet.removivel}
           onDeleteTweet={this.onDeleteTweet}
+          onSelect={this.onSelectTweet}
         >
           <p className="tweet__conteudo">
             <span>{tweet.conteudo}</span>

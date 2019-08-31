@@ -34,12 +34,21 @@ class Tweet extends Component {
       });
   }
 
+  handleOpenTweet = (event) => {
+
+    const clicouNoFooter =  event.target.closest('.tweet__footer');
+
+    const {id, onSelect } = this.props;
+
+    if(onSelect && !clicouNoFooter) onSelect(id);
+  }
+
   render() {
 
     const { avatarUrl, nomeUsuario, userName, children, removivel} = this.props;
 
     return (
-      <article className="tweet">
+      <article className="tweet" onClick={this.handleOpenTweet}>
 
         <div className="tweet__cabecalho">
           <img className="tweet__fotoUsuario" src={avatarUrl} alt="" />
