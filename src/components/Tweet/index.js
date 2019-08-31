@@ -1,9 +1,27 @@
-import React, { Component } from 'react'
-import './tweet.css'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import './tweet.css';
 
 import * as TweetsService from '../../services/tweets';
 
 class Tweet extends Component {
+
+  static propTypes = {
+		nomeUsuario: PropTypes.string.isRequired,
+    userName: PropTypes.string.isRequired,
+    totalLikes: PropTypes.number.isRequired,
+    avatarUrl: PropTypes.string.isRequired,
+    id: PropTypes.string.isRequired,
+    likeado: PropTypes.bool.isRequired,
+    removivel: PropTypes.bool,
+    onDeleteTweet: PropTypes.func.isRequired,
+    onSelect: PropTypes.func,
+	};
+
+	static defaultProps = {
+    onSelect: null,
+    removivel: false,
+	};
 
   state = {
     likeado: this.props.likeado,

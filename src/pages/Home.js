@@ -122,9 +122,8 @@ class Home extends Component {
               avatarUrl={tweetSelecionado.usuario.foto}
               id={tweetSelecionado._id}
               likeado={tweetSelecionado.likeado}
-              //onDeleteTweet={this.onDeleteTweet}
-              //removivel={tweetSelecionado.removivel}
-              //onSelect={this.onSelectTweet}
+              onDeleteTweet={this.onDeleteTweet}
+              removivel={tweetSelecionado.removivel}
             >
               <p className="tweet__conteudo">
                 <span>{tweetSelecionado.conteudo}</span>
