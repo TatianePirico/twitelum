@@ -29,9 +29,9 @@ class Home extends Component {
     const token = localStorage.getItem('token');
     
     TweetsService.criaTweet(token, this.state.novoTweet)
-      .then((data)=>{
+      .then((novoTweet)=>{
         this.setState({
-          listaTweet: [...this.state.listaTweet, data],
+          listaTweet: [...this.state.listaTweet, novoTweet],
           novoTweet: '',
         });
       })
