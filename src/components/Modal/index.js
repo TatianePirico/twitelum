@@ -19,7 +19,7 @@ class Modal extends Component {
 			<div className={`modal ${isOpen ? 'modal--active' : ''}`} onClick={this.closeModal} >
 				<div className="modal__conteudo">
 					<Widget>
-					{ children }
+					{ isOpen && children }
 					</Widget>
 				</div>
 			</div>
