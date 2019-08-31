@@ -7,20 +7,24 @@ import * as TweetsService from '../../services/tweets';
 class Tweet extends Component {
 
   static propTypes = {
+    likeado: PropTypes.bool,
 		nomeUsuario: PropTypes.string.isRequired,
     userName: PropTypes.string.isRequired,
     totalLikes: PropTypes.number.isRequired,
-    avatarUrl: PropTypes.string.isRequired,
+    avatarUrl: PropTypes.string,
     id: PropTypes.string.isRequired,
-    likeado: PropTypes.bool.isRequired,
     removivel: PropTypes.bool,
-    onDeleteTweet: PropTypes.func.isRequired,
+    onDeleteTweet: PropTypes.func,
     onSelect: PropTypes.func,
+    children: PropTypes.node.isRequired,
 	};
 
 	static defaultProps = {
     onSelect: null,
     removivel: false,
+    likeado: false,
+    avatarUrl: 'http://barcarena.pa.gov.br/portal/img/perfil/padrao.jpg',
+    onDeleteTweet: () => {},
 	};
 
   state = {
