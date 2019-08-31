@@ -4,6 +4,7 @@ import Widget from '../../components/Widget'
 
 import If from '../../components/If';
 import { NotificacaoContext } from '../../contexts/notificacao';
+import * as LoginService from '../../services/login';
 
 import './loginPage.css'
 
@@ -12,34 +13,26 @@ class LoginPage extends Component {
   static contextType = NotificacaoContext;
 
   state = {
-		errorMessage: '',
-	};
+    errorMessage: '',
+  };
 
   handleLogin = (event) => {
     event.preventDefault();
 
     const login = this.refs.login.value;
     const senha = this.refs.senha.value;
-    const url = 'https://api-twitelum.herokuapp.com';
 
-    fetch(`${url}/login`, {
-      method: 'POST',
-      body: JSON.stringify({ login, senha })
-    })
-      .then(async (response) => {
-
-        const data = await response.json();
-
-        if (response.ok) {
+    LoginService.logar(login, senha)
+      .then(({ data, respostaOK }) => {
+        if (respostaOK) {
           this.context.setMensagem('Login feito com sucesso');
           localStorage.setItem('token', data.token);
           this.props.history.push('/');
         } else {
           this.setState({ errorMessage: data.message });
         }
+      }).catch((err) => console.log(err));
 
-      })
-      .catch((err) => console.log(err));
   }
 
   render() {
@@ -62,10 +55,10 @@ class LoginPage extends Component {
 
                 {
                   <If cond={this.state.errorMessage}>
-                    <div className="loginPage__errorBox"> { this.state.errorMessage } </div>
-                  </If> 
+                    <div className="loginPage__errorBox"> {this.state.errorMessage} </div>
+                  </If>
                 }
-                
+
                 <div className="loginPage__inputWrap">
                   <button className="loginPage__btnLogin" type="submit"> Logar </button>
                 </div>
