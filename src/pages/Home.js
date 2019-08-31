@@ -17,6 +17,16 @@ class Home extends Component {
     listaTweet: []
   };
 
+  componentWillMount() {
+    
+    const token = localStorage.getItem('token');
+
+    TweetsService.listaTweets(token)
+      .then((listaDeTweets) => {
+        this.setState({ listaTweet: listaDeTweets });
+      })
+  }
+ 
   novoTweetEstaValido() {
     const novoTweetLength = this.state.novoTweet.length;
     return novoTweetLength <= 140 && novoTweetLength > 0;
@@ -31,7 +41,7 @@ class Home extends Component {
     TweetsService.criaTweet(token, this.state.novoTweet)
       .then((novoTweet)=>{
         this.setState({
-          listaTweet: [...this.state.listaTweet, novoTweet],
+          listaTweet: [novoTweet, ...this.state.listaTweet],
           novoTweet: '',
         });
       })
@@ -99,6 +109,9 @@ class Home extends Component {
           userName={`@${tweet.usuario.login}`}
           totalLikes={tweet.totalLikes}
           avatarUrl={tweet.usuario.foto}
+          id={tweet._id}
+          likeado={tweet.likeado}
+          removivel={tweet.removivel}
         >
           <p className="tweet__conteudo">
             <span>{tweet.conteudo}</span>

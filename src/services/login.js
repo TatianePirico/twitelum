@@ -1,6 +1,6 @@
 export function logar(login, senha) {
 
-  const url = 'https://api-twitelum.herokuapp.com';
+  const url = 'https://twitelum-api.herokuapp.com';
 
   return fetch(`${url}/login`, {
     method: 'POST',
