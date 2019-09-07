@@ -14,7 +14,6 @@ class Home extends Component {
 
   state = {
     novoTweet: '',
-    tweetSelecionado: null
   }
 
   componentDidMount() {
@@ -29,16 +28,15 @@ class Home extends Component {
   }
 
   handleCloseModal = () => {
-    this.setState({
-      tweetSelecionado: null
-    })
+    this.props.dispatch(TweetsActions.limpaSelecao());
+  }
+
+  onCurtirTweet = (tweetId) => {
+    this.props.dispatch(TweetsActions.curtir(tweetId));
   }
 
   onSelectTweet = (tweetId) => {
-    const tweetSelecionado = this.props.listaDaStore
-      .find(tweet => tweet._id === tweetId);
-
-    this.setState({ tweetSelecionado });
+    this.props.dispatch(TweetsActions.selecionaTweet(tweetId));
   }
 
   onDeleteTweet = (tweetId) => {
@@ -52,8 +50,8 @@ class Home extends Component {
   }
 
   render() {
-    const { novoTweet, tweetSelecionado } = this.state;
-    const { listaDaStore } = this.props;
+    const { novoTweet } = this.state;
+    const { listaDaStore, tweetSelecionado } = this.props;
 
     return (
       <Fragment>
@@ -96,11 +94,11 @@ class Home extends Component {
           <Dashboard posicao="centro">
             <Widget>
               <div className="tweetsArea">
-                {/* truthy */}
+
                 {!listaDaStore.length && (
                   <p>Twite alguma coisa! Vamos arranjar treta!</p>
                 )}
-                {/* adaptação da renderização de tweets */}
+
                 {listaDaStore.map(tweet => (
                   <Tweet
                     key={tweet._id}
@@ -113,6 +111,7 @@ class Home extends Component {
                     avatarUrl={tweet.usuario.foto}
                     onDelete={this.onDeleteTweet}
                     onSelect={this.onSelectTweet}
+                    onCurtirTweet={this.onCurtirTweet}
                   >
                     {tweet.conteudo}
                   </Tweet>
@@ -135,6 +134,7 @@ class Home extends Component {
               likeado={tweetSelecionado.likeado}
               avatarUrl={tweetSelecionado.usuario.foto}
               onDelete={this.onDeleteTweet}
+              onCurtirTweet={this.onCurtirTweet}
             >
               {tweetSelecionado.conteudo}
             </Tweet>
@@ -146,8 +146,12 @@ class Home extends Component {
 }
 
 function mapStateToProps (stateDaStore) {
+  
+  const { lista, tweetSelecionado } = stateDaStore.tweets;
+
   return {
-    listaDaStore: stateDaStore.tweets.lista
+    listaDaStore: lista,
+    tweetSelecionado: lista.find(tweet => tweet._id === tweetSelecionado)
   };
 }
 

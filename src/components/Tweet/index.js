@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 // import If from './../If';
 import './tweet.css';
 
-import * as TweetsService from '../../services/tweets';
+// import * as TweetsService from '../../services/tweets';
 
 class Tweet extends Component {
   static propTypes = {
@@ -34,17 +34,8 @@ class Tweet extends Component {
   }
 
   handleCurtir = () => {
-    const { likeado, totalLikes } = this.state;
-    const token = localStorage.getItem('token');
-    const tweetId = this.props.id;
-
-    TweetsService.curtirTweet({ token, tweetId })
-      .then(() => {
-        this.setState({
-          likeado: !likeado,
-          totalLikes: totalLikes + (likeado ? -1 : 1)
-        });
-      });
+    const { id, onCurtirTweet } = this.props;
+    onCurtirTweet(id)
   }
 
   handleDelete = () => {
@@ -68,8 +59,9 @@ class Tweet extends Component {
       userName,
       children,
       removivel,
+      totalLikes,
+      likeado
     } = this.props;
-    const { totalLikes, likeado } = this.state;
 
     return (
       <article className="tweet" onClick={this.handleSelect} >
