@@ -8,21 +8,12 @@ import Modal from './../components/Modal';
 import Widget from './../components/Widget'
 import TrendsArea from './../components/TrendsArea'
 import Tweet from './../components/Tweet'
-
-// import { NotificacaoContext } from './../contexts/notificacao';
-import * as TweetsService from '../services/tweets';
-import * as TweetsActions from '../actions/tweets';
+import { actions as TweetsActions } from '../ducks/tweets';
 
 class Home extends Component {
-  // constructor(props) {
-  //   super(props);
-
-  //   this.handleCriaTweet = this.handleCriaTweet.bind(this);
-  // }
 
   state = {
     novoTweet: '',
-    listaTweets: [],
     tweetSelecionado: null
   }
 
@@ -30,39 +21,11 @@ class Home extends Component {
     this.props.dispatch(TweetsActions.listaTweets());
   }
 
-  // componentDidUpdate() {}
-
-  // componentDidMount() {
-  //   window.addEventListener('resize', this.handleResize);
-  //   // conexão com socket
-  // }
-  // componentWillUnmount() {
-  //   window.removeEventListener('resize', this.handleResize);
-  //   // desconectar socket
-  // }
-
   handleCriaTweet = (evento) => {
-  // handleCriaTweet(evento) {
     evento.preventDefault();
 
-    const token = localStorage.getItem('token');
-
-    TweetsService.criaTweet({
-      token,
-      conteudo: this.state.novoTweet
-    }).then((tweetCriado) => {
-      // atualizar state com objeto de tweet
-      // adaptação da renderização de tweets
-      this.setState({
-        novoTweet: '',
-        //  listaTweets: [tweetCriado, ...this.state.listaTweets]
-      });
-      this.props.dispatch({
-        type: 'tweets/novoTweet',
-        // listaDeTweets: listaDeTweets
-        novoTweet: tweetCriado
-      });
-    }).catch(console.log);
+    this.props.dispatch(TweetsActions.criaTweet(this.state.novoTweet))
+      .then(() => this.setState({ novoTweet : ''}));
   }
 
   handleCloseModal = () => {
@@ -72,19 +35,14 @@ class Home extends Component {
   }
 
   onSelectTweet = (tweetId) => {
-    const tweetSelecionado = this.state.listaTweets
+    const tweetSelecionado = this.props.listaDaStore
       .find(tweet => tweet._id === tweetId);
 
-    this.setState({
-      tweetSelecionado
-    });
+    this.setState({ tweetSelecionado });
   }
 
   onDeleteTweet = (tweetId) => {
-    this.props.dispatch({
-      type: 'tweets/removeTweet',
-      tweetId
-    });
+    this.props.dispatch(TweetsActions.deleteTweet(tweetId));
   }
 
   novoTweetEstaValido() {
@@ -93,22 +51,9 @@ class Home extends Component {
     return novoTweetLength > 0 && novoTweetLength <= 140;
   }
 
-  // novoTweetEstaValido(novoTweet) {
-  //   const novoTweetLength = novoTweet.length;
-
-  //   return novoTweetLength > 0 && novoTweetLength <= 140;
-  // }
-
   render() {
-    // destructuring
     const { novoTweet, tweetSelecionado } = this.state;
-    // const [primeiroTweet, segundoTweet] = listaTweets;
-
     const { listaDaStore } = this.props;
-    console.log(listaDaStore);
-
-    // const novoTweet = this.state.novoTweet;
-    // const listaTweets = this.state.listaTweets;
 
     return (
       <Fragment>
@@ -127,10 +72,9 @@ class Home extends Component {
                     className="novoTweet__editor"
                     placeholder="O que está acontecendo?"
                     onChange={(evento) => {
-                      // console.log(evento.target.value);
+
                       this.setState({
                         novoTweet: evento.target.value,
-                        // isValid: novoTweetEstaValido(evento.target.value)
                       });
                     }}
                     value={novoTweet}
@@ -190,7 +134,7 @@ class Home extends Component {
               removivel={tweetSelecionado.removivel}
               likeado={tweetSelecionado.likeado}
               avatarUrl={tweetSelecionado.usuario.foto}
-              onDelete={this.onDeleteTweetSelecionado}
+              onDelete={this.onDeleteTweet}
             >
               {tweetSelecionado.conteudo}
             </Tweet>
@@ -203,12 +147,8 @@ class Home extends Component {
 
 function mapStateToProps (stateDaStore) {
   return {
-    // nomeDaProp: stateDaStore
-    listaDaStore: stateDaStore.lista
+    listaDaStore: stateDaStore.tweets.lista
   };
 }
-
-// const HomeConectadaComStore = connect(mapStateToProps)(Home);
-// export default HomeConectadaComStore;
 
 export default connect(mapStateToProps)(Home);

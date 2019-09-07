@@ -48,11 +48,8 @@ class Tweet extends Component {
   }
 
   handleDelete = () => {
-    const token = localStorage.getItem('token');
     const { id, onDelete } = this.props;
-
-    TweetsService.deleteTweet({ token, tweetId: id })
-      .then(() => onDelete(id));
+    onDelete(id)
   }
 
   handleSelect = (evento) => {
@@ -71,7 +68,6 @@ class Tweet extends Component {
       userName,
       children,
       removivel,
-      // totalLikes
     } = this.props;
     const { totalLikes, likeado } = this.state;
 
