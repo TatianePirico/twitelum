@@ -11,6 +11,7 @@ import Tweet from './../components/Tweet'
 
 // import { NotificacaoContext } from './../contexts/notificacao';
 import * as TweetsService from '../services/tweets';
+import * as TweetsActions from '../actions/tweets';
 
 class Home extends Component {
   // constructor(props) {
@@ -26,21 +27,7 @@ class Home extends Component {
   }
 
   componentDidMount() {
-    const token = localStorage.getItem('token');
-
-    TweetsService.listaTweets(token)
-      .then((listaDeTweets) => {
-        // window.store.dispatch({
-        this.props.dispatch({
-          type: 'tweets/atualizaLista',
-          // listaDeTweets: listaDeTweets
-          listaDeTweets
-        });
-
-        // this.setState({
-        //   listaTweets: listaDeTweets
-        // });
-      })
+    this.props.dispatch(TweetsActions.listaTweets());
   }
 
   // componentDidUpdate() {}

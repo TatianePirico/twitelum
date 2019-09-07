@@ -2,10 +2,11 @@
 
 ## Instalações
 
-`npm install --save redux react-redux`
+`npm install --save redux react-redux redux-thunk`
 
 - redux
 - react-redux
+- redux-thunk
 
 ## 1 - Criar a store
 
