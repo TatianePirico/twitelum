@@ -1,40 +1,48 @@
 import React from 'react';
-import { Redirect } from 'react-router-dom';
-
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Redirect, Route } from 'react-router-dom';
+// caminho -> componente
 
 import Home from './pages/Home';
 import Login from './pages/LoginPage';
 import Logout from './pages/Logout';
+import NotFound from './pages/NotFound';
 
-const ErrorPage = ({match}) => {
-  return(
-    <>
-      <h1>Ooops...</h1>
-      <span>A rota {match.url} não foi encontrada!</span>
-    </>
-  );
+// criar o component NotFound
+// configurar a rota
+
+const Trend = (props) => {
+  console.log(props);
+  return (<h1>Tela do trend: {props.match.params.trendId}</h1>);
 }
 
-const RotasProtegidas = ({ deveEstarAutenticado, ...props }) => {
-
+// const RotaAutenticada = ({ path, component, exact }) => {
+const RotaProtegida = ({ deveEstarAutenticado, redirectTo, ...props }) => {
   const token = localStorage.getItem('token');
 
-  if((token && deveEstarAutenticado) || (!token && !deveEstarAutenticado)) {
-    return <Route {...props} />
+  if ((token && deveEstarAutenticado) || (!token && !deveEstarAutenticado)) {
+    return <Route {...props} />;
   }
-  return <Redirect to="login" />
+
+  return <Redirect to={redirectTo} />;
 }
 
 const Roteamento = () => {
   return (
     <Switch>
-      <RotasProtegidas path="/" component={Home} exact deveEstarAutenticado={true} />
-      <Route path="/login" component={Login} deveEstarAutenticado={false}/>
-      <RotasProtegidas path="/logout" component={Logout} deveEstarAutenticado={true} />
-      <Route path="*" component={ErrorPage}/>
+      {/* onde? o quê? */}
+      <RotaProtegida path="/" component={Home} exact redirectTo="/login" deveEstarAutenticado />
+      {/* <Route path="/" component={Home} exact={true} /> */}
+      <RotaProtegida path="/login" component={Login} redirectTo="/" deveEstarAutenticado={false} />
+
+      <Route path="/logout" component={Logout} />
+      <Route path="/trend/:trendId" component={Trend} />
+      <Route path="*" component={NotFound} />
     </Switch>
   );
-}
+};
 
 export default Roteamento;
+// import Rotas from './routes';
+
+// export Roteamento;
+// import { Roteamento } from './routes';

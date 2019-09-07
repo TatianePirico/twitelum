@@ -1,16 +1,20 @@
 .modal {
+  background-color: rgba(0, 0, 0, 0.5);
   position: fixed;
   top: 0;
   bottom: 0;
   left: 0;
   right: 0;
-  background-color: rgba(0, 0, 0, 0.5);
   padding: 10%;
   pointer-events: none;
   visibility: hidden;
 }
 
-.modal--active{
+.modal--active {
   pointer-events: auto;
   visibility: visible;
 }
+
+/* .modal__conteudo {
+
+} */

@@ -1,17 +1,21 @@
 import config from '../config';
 
 export function logar(login, senha) {
-
   return fetch(`${config.api}/login`, {
-    method: 'POST',
-    body: JSON.stringify({ login, senha })
-  })
-    .then(async (response) => {
-      const data = await response.json();
+  // return fetch('https://api-twitelum.herokuapp.com/login', {
+      method: 'POST',
+      body: JSON.stringify({ login, senha })
+    }).then(async (resposta) => {
+      // console.log('resposta:', resposta);
+      // console.log('resposta.body:', resposta.body); // Readable Stream
+
+      // resposta.status === 200
+      // if (!resposta.ok) throw new Error();
+      const data = await resposta.json();
 
       return {
         data,
-        respostaOK: response.ok
-      }
-    })
+        respostaOk: resposta.ok
+      };
+    });
 }

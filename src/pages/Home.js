@@ -1,73 +1,127 @@
 import React, { Component, Fragment } from 'react';
+import { connect } from 'react-redux';
 
-//Components
-import Cabecalho from '../components/Cabecalho';
-import Modal from '../components/Modal';
-import NavMenu from '../components/NavMenu';
-import Dashboard from '../components/Dashboard';
-import Widget from '../components/Widget';
-import TrendsArea from '../components/TrendsArea';
-import Tweet from '../components/Tweet';
+import Cabecalho from './../components/Cabecalho'
+import NavMenu from './../components/NavMenu'
+import Dashboard from './../components/Dashboard'
+import Modal from './../components/Modal';
+import Widget from './../components/Widget'
+import TrendsArea from './../components/TrendsArea'
+import Tweet from './../components/Tweet'
 
+// import { NotificacaoContext } from './../contexts/notificacao';
 import * as TweetsService from '../services/tweets';
 
 class Home extends Component {
+  // constructor(props) {
+  //   super(props);
+
+  //   this.handleCriaTweet = this.handleCriaTweet.bind(this);
+  // }
 
   state = {
     novoTweet: '',
-    listaTweet: [],
+    listaTweets: [],
     tweetSelecionado: null
-  };
+  }
 
-  componentWillMount() {
-
+  componentDidMount() {
     const token = localStorage.getItem('token');
 
     TweetsService.listaTweets(token)
       .then((listaDeTweets) => {
-        this.setState({ listaTweet: listaDeTweets });
+        // window.store.dispatch({
+        this.props.dispatch({
+          type: 'tweets/atualizaLista',
+          // listaDeTweets: listaDeTweets
+          listaDeTweets
+        });
+
+        // this.setState({
+        //   listaTweets: listaDeTweets
+        // });
       })
+  }
+
+  // componentDidUpdate() {}
+
+  // componentDidMount() {
+  //   window.addEventListener('resize', this.handleResize);
+  //   // conexão com socket
+  // }
+  // componentWillUnmount() {
+  //   window.removeEventListener('resize', this.handleResize);
+  //   // desconectar socket
+  // }
+
+  handleCriaTweet = (evento) => {
+  // handleCriaTweet(evento) {
+    evento.preventDefault();
+
+    const token = localStorage.getItem('token');
+
+    TweetsService.criaTweet({
+      token,
+      conteudo: this.state.novoTweet
+    }).then((tweetCriado) => {
+      // atualizar state com objeto de tweet
+      // adaptação da renderização de tweets
+      this.setState({
+        novoTweet: '',
+        //  listaTweets: [tweetCriado, ...this.state.listaTweets]
+      });
+      this.props.dispatch({
+        type: 'tweets/novoTweet',
+        // listaDeTweets: listaDeTweets
+        novoTweet: tweetCriado
+      });
+    }).catch(console.log);
+  }
+
+  handleCloseModal = () => {
+    this.setState({
+      tweetSelecionado: null
+    })
+  }
+
+  onSelectTweet = (tweetId) => {
+    const tweetSelecionado = this.state.listaTweets
+      .find(tweet => tweet._id === tweetId);
+
+    this.setState({
+      tweetSelecionado
+    });
+  }
+
+  onDeleteTweet = (tweetId) => {
+    this.props.dispatch({
+      type: 'tweets/removeTweet',
+      tweetId
+    });
   }
 
   novoTweetEstaValido() {
     const novoTweetLength = this.state.novoTweet.length;
-    return novoTweetLength <= 140 && novoTweetLength > 0;
+
+    return novoTweetLength > 0 && novoTweetLength <= 140;
   }
 
-  handleCloseModal = () => {
-    this.setState({ tweetSelecionado: null });
-  }
+  // novoTweetEstaValido(novoTweet) {
+  //   const novoTweetLength = novoTweet.length;
 
-  onSelectTweet = (tweetId) => {
-    const tweetSelecionado = this.state.listaTweet.find(tweet => tweet._id === tweetId);
-    this.setState({ tweetSelecionado });
-  }
-
-  onDeleteTweet = (id) => {
-    const { listaTweet } = this.state;
-
-    this.setState({ listaTweet: listaTweet.filter((tweet) => tweet._id !== id) });
-  }
-
-  handleCriaTweet = (event) => {
-
-    event.preventDefault();
-
-    const token = localStorage.getItem('token');
-
-    TweetsService.criaTweet(token, this.state.novoTweet)
-      .then((novoTweet) => {
-        this.setState({
-          listaTweet: [novoTweet, ...this.state.listaTweet],
-          novoTweet: '',
-        });
-      })
-      .catch((err) => console.log(err));
-  }
+  //   return novoTweetLength > 0 && novoTweetLength <= 140;
+  // }
 
   render() {
-
+    // destructuring
     const { novoTweet, tweetSelecionado } = this.state;
+    // const [primeiroTweet, segundoTweet] = listaTweets;
+
+    const { listaDaStore } = this.props;
+    console.log(listaDaStore);
+
+    // const novoTweet = this.state.novoTweet;
+    // const listaTweets = this.state.listaTweets;
 
     return (
       <Fragment>
@@ -79,21 +133,29 @@ class Home extends Component {
             <Widget>
               <form className="novoTweet" onSubmit={this.handleCriaTweet}>
                 <div className="novoTweet__editorArea">
-                  <span className={`novoTweet__status ${this.novoTweetEstaValido() ? '' : 'novoTweet__status--invalido'}`}>
+                  <span className={`novoTweet__status ${this.novoTweetEstaValido() ? '' : 'novoTweet__status--invalido'}`} >
                     {novoTweet.length}/140
-									</span>
+                  </span>
                   <textarea
                     className="novoTweet__editor"
                     placeholder="O que está acontecendo?"
-                    onChange={(event) => this.setState({ novoTweet: event.target.value })}
+                    onChange={(evento) => {
+                      // console.log(evento.target.value);
+                      this.setState({
+                        novoTweet: evento.target.value,
+                        // isValid: novoTweetEstaValido(evento.target.value)
+                      });
+                    }}
                     value={novoTweet}
-                  ></textarea>
+                  />
                 </div>
                 <button
                   type="submit"
-                  className={`novoTweet__envia `}
+                  className="novoTweet__envia"
                   disabled={!this.novoTweetEstaValido()}
-                >Tweetar</button>
+                >
+                  Tweetar
+                </button>
               </form>
             </Widget>
             <Widget>
@@ -103,68 +165,63 @@ class Home extends Component {
           <Dashboard posicao="centro">
             <Widget>
               <div className="tweetsArea">
-                {this.renderTweet()}
+                {/* truthy */}
+                {!listaDaStore.length && (
+                  <p>Twite alguma coisa! Vamos arranjar treta!</p>
+                )}
+                {/* adaptação da renderização de tweets */}
+                {listaDaStore.map(tweet => (
+                  <Tweet
+                    key={tweet._id}
+                    id={tweet._id}
+                    nomeUsuario={`${tweet.usuario.nome} ${tweet.usuario.sobrenome}`}
+                    userName={tweet.usuario.login}
+                    totalLikes={tweet.totalLikes}
+                    removivel={tweet.removivel}
+                    likeado={tweet.likeado}
+                    avatarUrl={tweet.usuario.foto}
+                    onDelete={this.onDeleteTweet}
+                    onSelect={this.onSelectTweet}
+                  >
+                    {tweet.conteudo}
+                  </Tweet>
+                ))}
               </div>
             </Widget>
           </Dashboard>
         </div>
-
         <Modal
-          isOpen={Boolean(this.state.tweetSelecionado)}
-          onClose={this.handleCloseModal} >
-
-          {
-            tweetSelecionado &&
+          isOpen={Boolean(tweetSelecionado)}
+          onClose={this.handleCloseModal}
+        >
+          {tweetSelecionado && (
             <Tweet
-              nomeUsuario={`${tweetSelecionado.usuario.nome} ${tweetSelecionado.usuario.sobrenome}`}
-              userName={`@${tweetSelecionado.usuario.login}`}
-              totalLikes={tweetSelecionado.totalLikes}
-              avatarUrl={tweetSelecionado.usuario.foto}
               id={tweetSelecionado._id}
-              likeado={tweetSelecionado.likeado}
-              onDeleteTweet={this.onDeleteTweet}
+              nomeUsuario={`${tweetSelecionado.usuario.nome} ${tweetSelecionado.usuario.sobrenome}`}
+              userName={tweetSelecionado.usuario.login}
+              totalLikes={tweetSelecionado.totalLikes}
               removivel={tweetSelecionado.removivel}
+              likeado={tweetSelecionado.likeado}
+              avatarUrl={tweetSelecionado.usuario.foto}
+              onDelete={this.onDeleteTweetSelecionado}
             >
-              <p className="tweet__conteudo">
-                <span>{tweetSelecionado.conteudo}</span>
-              </p>
+              {tweetSelecionado.conteudo}
             </Tweet>
-          }
-
-
+          )}
         </Modal>
-
       </Fragment>
     );
   }
-
-  renderTweet() {
-
-    const { listaTweet } = this.state;
-
-    if (!listaTweet.length) return <span>Let's go! Vamos arrumar briga!</span>
-
-    return (
-      listaTweet.map((tweet) =>
-        <Tweet
-          key={tweet._id}
-          nomeUsuario={`${tweet.usuario.nome} ${tweet.usuario.sobrenome}`}
-          userName={`@${tweet.usuario.login}`}
-          totalLikes={tweet.totalLikes}
-          avatarUrl={tweet.usuario.foto}
-          id={tweet._id}
-          likeado={tweet.likeado}
-          removivel={tweet.removivel}
-          onDeleteTweet={this.onDeleteTweet}
-          onSelect={this.onSelectTweet}
-        >
-          <p className="tweet__conteudo">
-            <span>{tweet.conteudo}</span>
-          </p>
-        </Tweet>
-      )
-    )
-  }
 }
 
-export default Home;
+function mapStateToProps (stateDaStore) {
+  return {
+    // nomeDaProp: stateDaStore
+    listaDaStore: stateDaStore.lista
+  };
+}
+
+// const HomeConectadaComStore = connect(mapStateToProps)(Home);
+// export default HomeConectadaComStore;
+
+export default connect(mapStateToProps)(Home);
